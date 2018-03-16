@@ -3,7 +3,8 @@
 #include <png.h>
 
 int width, height;
-unsigned int replace_table[16777216];
+unsigned int search_int;
+unsigned int search_count = 0;
 png_byte color_type;
 png_byte bit_depth;
 png_bytep *row_pointers;
@@ -63,46 +64,6 @@ void read_png_file(char *filename) {
   fclose(fp);
 }
 
-void write_png_file(char *filename) {
-  int y;
-
-  FILE *fp = fopen(filename, "wb");
-  if(!fp) abort();
-
-  png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-  if (!png) abort();
-
-  png_infop info = png_create_info_struct(png);
-  if (!info) abort();
-
-  if (setjmp(png_jmpbuf(png))) abort();
-
-  png_init_io(png, fp);
-
-  // Output is 8bit depth, RGBA format.
-  png_set_IHDR(
-    png,
-    info,
-    width, height,
-    8,
-    PNG_COLOR_TYPE_RGBA,
-    PNG_INTERLACE_NONE,
-    PNG_COMPRESSION_TYPE_DEFAULT,
-    PNG_FILTER_TYPE_DEFAULT
-  );
-  png_write_info(png, info);
-
-  png_write_image(png, row_pointers);
-  png_write_end(png, NULL);
-
-  for(int y = 0; y < height; y++) {
-    free(row_pointers[y]);
-  }
-  free(row_pointers);
-
-  fclose(fp);
-}
-
 void process_png_file() {
   unsigned int* color;
   for(int y = 0; y < height; y++) {
@@ -110,49 +71,34 @@ void process_png_file() {
     for(int x = 0; x < width; x++) {
       png_bytep px = &(row[x * 4]);
       color = (unsigned int*)(&row[x*4]);
-      *color = replace_table[(*color)&0xFFFFFF] | (*color&0xFF000000);
+      if(search_int == ((*color) & 0xFFFFFF)) {
+        search_count++;
+      }
     }
   }
 }
 
 int main(int argc, char *argv[]) {
   unsigned int i;
-  char* from_str;
-  char* to_str;
-  unsigned int from_int;
-  unsigned int to_int;
+  char* search_str;
 
-  for(i=0;i<16777216;i++) {
-    replace_table[i] = i;
-  }
-
-  if(argc < 4) {
-    printf("Replaces all pixels of one hex color with another.\n");
+  if(argc != 3) {
+    printf("Returns filename if a PNG file contains a pixel with specified color.\n");
     printf("Usage: \n");
-    printf("    %s infile.png outfile.png ff0000:0000ff 00ff00:000000 ...\n", argv[0]);
+    printf("    %s infile.png ff0000\n", argv[0]);
     return 1;
   }
 
-  for(i=3;i<argc;i++) {
-    from_str = strtok(argv[i], ":");
-    from_int = (int)strtol(from_str, NULL, 16);
-    // byte swap for BGR->RGB
-    from_int = ((from_int<<16)&0xff0000) | 
-             ((from_int<<8)&0x00ff00) |
-             (from_int>>16);
-    to_str = strtok(NULL, ":");
-    to_int = (int)strtol(to_str, NULL, 16);
-    // byte swap for BGR->RGB
-    to_int = ((to_int<<16)&0xff0000) | 
-             (to_int&0x00ff00) |
-             (to_int>>16);
-    replace_table[from_int] = to_int;
-    printf("%s (%d) -> %s (%d)\n", from_str, from_int, to_str, to_int);
-  }
+  search_int = (int)strtol(argv[2], NULL, 16);
+  // byte swap for BGR->RGB
+  search_int = ((search_int<<16)&0xff0000) | 
+           ((search_int<<8)&0x00ff00) |
+           (search_int>>16);
 
   read_png_file(argv[1]);
   process_png_file();
-  write_png_file(argv[2]);
-
+//  if(search_count > 0) {
+    printf("%s %d\n",argv[1],search_count);
+//  }
   return 0;
 }
