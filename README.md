@@ -15,5 +15,5 @@ make
 ./pngsed infile.png outfile.png ff0000:000000 00ff00:010101 0000ff:020202
 ````
 
-converts red pixels to black rgb(0,0,0), blue to rgb(1,1,1), green to rgb(2,2,2).
+converts red pixels to black rgb(0,0,0), green to rgb(1,1,1), blue to rgb(2,2,2).
 
