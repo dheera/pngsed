@@ -85,20 +85,20 @@ int main(int argc, char *argv[]) {
   if(argc != 3) {
     printf("Returns filename if a PNG file contains a pixel with specified color.\n");
     printf("Usage: \n");
-    printf("    %s infile.png ff0000\n", argv[0]);
+    printf("    %s ff0000 infile.png\n", argv[0]);
     return 1;
   }
 
-  search_int = (int)strtol(argv[2], NULL, 16);
+  search_int = (int)strtol(argv[1], NULL, 16);
   // byte swap for BGR->RGB
   search_int = ((search_int<<16)&0xff0000) | 
            ((search_int<<8)&0x00ff00) |
            (search_int>>16);
 
-  read_png_file(argv[1]);
+  read_png_file(argv[2]);
   process_png_file();
 //  if(search_count > 0) {
-    printf("%s %d\n",argv[1],search_count);
+    printf("%s %d\n",argv[2],search_count);
 //  }
   return 0;
 }
