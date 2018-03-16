@@ -1,3 +1,5 @@
+all: pngsed pnggrep
+
 pngsed: pngsed.c
 	gcc -o pngsed pngsed.c -lpng
 
