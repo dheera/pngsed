@@ -94,12 +94,12 @@ int main(int argc, char *argv[]) {
   }
 
   search_int_len = argc - 2;
-  for(i=0;i<argc-2;i++) {
+  for(i=0;i<search_int_len;i++) {
     search_int[i] = (int)strtol(argv[i+2], NULL, 16);
     // byte swap for BGR->RGB
     search_int[i] = ((search_int[i]<<16)&0xff0000) | 
-             ((search_int[i]<<8)&0x00ff00) |
-             (search_int[i]>>16);
+                    ((search_int[i])&0x00ff00) |
+                    (search_int[i]>>16&0x0000ff);
     search_count[i] = 0;
   }
   read_png_file(argv[1]);
