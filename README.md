@@ -17,8 +17,8 @@ Given a PNG file, reports the number of pixels of the given colors. Useful for f
 
 ````
 ./pngpixelstats infile.png 000000 010101
-000000581909.png 000000 947
-000000581909.png 010101 0
+infile.png 000000 947
+infile.png 010101 0
 ````
 
 
