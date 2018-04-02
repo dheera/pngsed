@@ -11,15 +11,15 @@ Super-fast pixel-wise color replacement for PNG files. Useful for converting seg
 converts red pixels to black rgb(0,0,0), green to rgb(1,1,1), blue to rgb(2,2,2).
 
 
-## pnggrep
+## pngpixelstats
 
-Greps a PNG file for color values and reports the number of instances. Does not output if color does not occur in the file. Useful for e.g. finding out which 
+Given a PNG file, reports the number of pixels of the given colors. Useful for finding e.g. which segmentation annotations contain a particular class.
 
 ````
-./pnggrep ff0000 infile.png
+./pngpixelstats infile.png 000000 010101
+000000581909.png 000000 947
+000000581909.png 010101 0
 ````
-
-to check if there are #ff0000 pixels in the image.
 
 
 ## Compiling
