@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
   read_png_file(argv[1]);
   process_png_file();
   for(i=0;i<search_int_len;i++) {
-    printf("%s %s %d\n",argv[1],argv[2],search_count[i]);
+    printf("%s %s %d\n",argv[1],argv[2+i],search_count[i]);
   }
   return 0;
 }
